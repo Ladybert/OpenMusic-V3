@@ -1,130 +1,71 @@
-const { nanoid } = require('nanoid');
-const notes = require('./notes');
+const autoBind = require('auto-bind');
 
-const addNoteHandler = (request, h) => {
-  const { title = 'untitled', tags, body } = request.payload;
-
-  const id = nanoid(16);
-  const createdAt = new Date().toISOString();
-  const updatedAt = createdAt;
-
-  const newNote = {
-    title, tags, body, id, createdAt, updatedAt,
-  };
-
-  notes.push(newNote);
-
-  const isSuccess = notes.filter((note) => note.id === id).length > 0;
-
-  if (isSuccess) {
-    const response = h.response({
-      status: 'success',
-      message: 'Catatan berhasil ditambahkan',
-      data: {
-        noteId: id,
-      },
-    });
-    response.code(201);
-    return response;
+class AlbumsHandler {
+  constructor(service, validator) {
+    this._service = service;
+    this._validator = validator;
+ 
+    autoBind(this);
   }
-
-  const response = h.response({
-    status: 'fail',
-    message: 'Catatan gagal ditambahkan',
-  });
-  response.code(500);
-  return response;
-};
-
-const getAllNotesHandler = () => ({
-  status: 'success',
-  data: {
-    notes,
-  },
-});
-
-const getNoteByIdHandler = (request, h) => {
-  const { id } = request.params;
-
-  const note = notes.filter((n) => n.id === id)[0];
-
-  if (note !== undefined) {
-    return {
+ 
+  async postAlbumHandler(request, h) {
+    this._validator.validateAlbumsPayload(request.payload);
+    const { name = 'untitled', year } = request.payload;
+ 
+    const albumId = await this._service.postAlbum({ name, year });
+ 
+    return h.response({
       status: 'success',
       data: {
-        note,
+        albumId,
       },
-    };
+    }).code(201);
   }
+ 
+  async getAlbumsHandler(request, h) {
+    const albums = await this._service.getAlbums();
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Catatan tidak ditemukan',
-  });
-  response.code(404);
-  return response;
-};
-
-const editNoteByIdHandler = (request, h) => {
-  const { id } = request.params;
-
-  const { title, tags, body } = request.payload;
-  const updatedAt = new Date().toISOString();
-
-  const index = notes.findIndex((note) => note.id === id);
-
-  if (index !== -1) {
-    notes[index] = {
-      ...notes[index],
-      title,
-      tags,
-      body,
-      updatedAt,
-    };
-
-    const response = h.response({
+    return h.response({
       status: 'success',
-      message: 'Catatan berhasil diperbarui',
-    });
-    response.code(200);
-    return response;
+      data: {
+        albums,
+      },
+    }).code(200);
   }
+ 
+  async getAlbumByIdHandler(request, h) {
+    const { albumId } = request.params;
+    const album = await this._service.getAlbumById(albumId);
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Gagal memperbarui catatan. Id tidak ditemukan',
-  });
-  response.code(404);
-  return response;
-};
-
-const deleteNoteByIdHandler = (request, h) => {
-  const { id } = request.params;
-
-  const index = notes.findIndex((note) => note.id === id);
-
-  if (index !== -1) {
-    notes.splice(index, 1);
-    const response = h.response({
+    return h.response({
       status: 'success',
-      message: 'Catatan berhasil dihapus',
-    });
-    response.code(200);
-    return response;
+      data: {
+        album,
+      },
+    }).code(200);
   }
+ 
+  async putAlbumByIdHandler(request, h) {
+    this._validator.validateAlbumsPayload(request.payload);
+    const { albumId } = request.params;
+ 
+    await this._service.editAlbumById(albumId, request.payload);
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Catatan gagal dihapus. Id tidak ditemukan',
-  });
-  response.code(404);
-  return response;
-};
+    return h.response({
+      status: 'success',
+      message: 'Album berhasil diperbarui',
+    }).code(200);
+  }
+ 
+  async deleteAlbumByIdHandler(request, h) {
+    const { albumId } = request.params;
+    await this._service.deleteAlbumById(albumId);
+ 
+    return h.response({
+      status: 'success',
+      message: 'Album berhasil dihapus',
+    }).code(200);
+  }
+}
 
-module.exports = {
-  addNoteHandler,
-  getAllNotesHandler,
-  getNoteByIdHandler,
-  editNoteByIdHandler,
-  deleteNoteByIdHandler,
-};
+module.exports = AlbumsHandler;
