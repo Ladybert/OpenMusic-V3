@@ -32,7 +32,7 @@ const init = async () => {
       validator: AlbumsValidator,
     },
   });
-  
+
   await server.register({
     plugin: songs,
     options: {

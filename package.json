@@ -16,8 +16,11 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.0",
-    "nodemon": "^3.0.1"
+    "eslint-plugin-prettier": "^5.2.1",
+    "nodemon": "^3.0.1",
+    "prettier": "3.3.3"
   },
   "dependencies": {
     "@hapi/hapi": "^21.3.2",
@@ -26,6 +29,7 @@
     "joi": "^17.13.3",
     "nanoid": "^3.1.20",
     "node-pg-migrate": "^7.6.1",
+    "notes-app-back-end": "file:",
     "pg": "^8.12.0",
     "psql": "^0.0.1"
   }
