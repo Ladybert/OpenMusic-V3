@@ -1,12 +1,4 @@
-/**
- * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
- */
-
-/**
- * @param pgm {import('node-pg-migrate').MigrationBuilder}
- * @param run {() => void | undefined}
- * @returns {Promise<void> | void}
- */
+/* eslint-disable no-unused-vars */
 exports.up = (pgm) => {
   pgm.createTable("songs", {
     id: {
@@ -34,19 +26,14 @@ exports.up = (pgm) => {
       notNull: false,
     },
     albumId: {
-        type: "VARCHAR(50)",
-        notNull: false,
-        references: '"albums"', 
-        onDelete: "CASCADE",
+      type: "VARCHAR(50)",
+      notNull: false,
+      references: '"albums"',
+      onDelete: "CASCADE",
     },
   });
 };
 
-/**
- * @param pgm {import('node-pg-migrate').MigrationBuilder}
- * @param run {() => void | undefined}
- * @returns {Promise<void> | void}
- */
 exports.down = (pgm) => {
-    pgm.dropTable('songs');
+  pgm.dropTable("songs");
 };

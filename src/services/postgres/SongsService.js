@@ -66,7 +66,7 @@ class SongsServices {
       throw new NotFoundError("Musik tidak ditemukan");
     }
 
-    return result.rows.map(mapSongs)[0];
+    return mapSongs(result.rows[0]);
   }
 
   async updateSongById(
