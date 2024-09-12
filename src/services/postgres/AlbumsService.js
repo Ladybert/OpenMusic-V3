@@ -36,7 +36,7 @@ class AlbumsServices {
     };
     const albumResult = await this.pool.query(albumQuery);
 
-    if (!albumResult.rows.length) {
+    if (!albumResult.rowCount) {
       throw new NotFoundError("Album tidak ditemukan");
     }
 

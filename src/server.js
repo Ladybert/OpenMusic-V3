@@ -54,22 +54,22 @@ const init = async () => {
   });
 
   // Registrasi plugin eksternal (JWT)
-await server.register(Jwt);
+  await server.register(Jwt);
 
-// Mendefinisikan strategi autentikasi JWT
-server.auth.strategy('open_music_jwt', 'jwt', {
-  keys: process.env.ACCESS_TOKEN_KEY,
-  verify: {
-    aud: false,
-    iss: false,
-    sub: false,
-    maxAgeSec: process.env.ACCESS_TOKEN_AGE,
-  },
-  validate: ({ decoded }) => ({
-    isValid: true,
-    credentials: { id: decoded.payload.id },
-  }),
-});
+  // Mendefinisikan strategi autentikasi JWT
+  server.auth.strategy("open_music_jwt", "jwt", {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: ({ decoded }) => ({
+      isValid: true,
+      credentials: { id: decoded.payload.id },
+    }),
+  });
 
   await server.register([
     {
@@ -86,7 +86,10 @@ server.auth.strategy('open_music_jwt', 'jwt', {
     },
     {
       plugin: playlists,
-      options: { service: playlistsService, validator: PlaylistsValidator },
+      options: {
+        service: playlistsService,
+        validator: PlaylistsValidator,
+      },
     },
     {
       plugin: authentications,
@@ -100,6 +103,7 @@ server.auth.strategy('open_music_jwt', 'jwt', {
     {
       plugin: collaborations,
       options: {
+        playlistsService,
         collaborationsService,
         validator: CollaborationsValidator,
       },

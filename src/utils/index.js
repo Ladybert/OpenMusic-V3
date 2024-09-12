@@ -22,14 +22,17 @@ const mapSongs = ({
   albumId,
 });
 
-const mapPlaylists = ({
-  id,
-  name,
-  username,
-}) => ({
+const mapPlaylists = ({ id, name, username }) => ({
   id,
   name,
   username,
 });
 
-module.exports = { mapAlbums, mapSongs, mapPlaylists };
+const mapPlaylistActivities = ({ username, title, action, time }) => ({
+  username,
+  title,
+  action,
+  time,
+});
+
+module.exports = { mapAlbums, mapSongs, mapPlaylists, mapPlaylistActivities };

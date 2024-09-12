@@ -33,7 +33,7 @@ exports.up = (pgm) => {
     time: {
       type: "DATE",
       notNull: false,
-      default: pgm.func("CURRENT_DATE"),
+      default: pgm.func("CURRENT_TIMESTAMP"),
     },
   });
 };

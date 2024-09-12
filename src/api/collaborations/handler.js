@@ -3,9 +3,9 @@ const autoBind = require("auto-bind");
 // const ClientError = require("../../exceptions/ClientError");
 
 class CollaborationsHandler {
-  constructor(collaborationsService, notesService, validator) {
+  constructor(playlistsService, collaborationsService, validator) {
     this.collaborationsService = collaborationsService;
-    this.notesService = notesService;
+    this.playlistsService = playlistsService;
     this.validator = validator;
 
     autoBind(this);
@@ -13,14 +13,19 @@ class CollaborationsHandler {
 
   async postCollaborationHandler(request, h) {
     this.validator.validateCollaborationPayload(request.payload);
+    const { playlistId, userId } = request.payload;
     const { id: credentialId } = request.auth.credentials;
-    const { noteId, userId } = request.payload;
-
-    await this.notesService.verifyNoteOwner(noteId, credentialId);
-    const collaborationId = await this.collaborationsService.addCollaboration(
-      noteId,
-      userId,
+    await this.collaborationsService.verifyPlaylistExists(playlistId);
+    await this.collaborationsService.verifyUserIfExists(userId);
+    await this.collaborationsService.verifyPlaylistOwner(
+      playlistId,
+      credentialId,
     );
+
+    const collaborationId = await this.collaborationsService.addCollaboration({
+      playlistId,
+      userId,
+    });
 
     const response = h.response({
       status: "success",
@@ -36,11 +41,15 @@ class CollaborationsHandler {
   // eslint-disable-next-line no-unused-vars
   async deleteCollaborationHandler(request, h) {
     this.validator.validateCollaborationPayload(request.payload);
+    const { playlistId, userId } = request.payload;
     const { id: credentialId } = request.auth.credentials;
-    const { noteId, userId } = request.payload;
 
-    await this.notesService.verifyNoteOwner(noteId, credentialId);
-    await this.collaborationsService.deleteCollaboration(noteId, userId);
+    await this.playlistsService.verifyPlaylistOwner(playlistId, credentialId);
+
+    await this.collaborationsService.deleteCollaboration({
+      playlistId,
+      userId,
+    });
 
     return {
       status: "success",
