@@ -55,14 +55,14 @@ class SongsServices {
     return result.rows;
   }
 
-  async getSongById(id) {
+  async getSongById(songId) {
     const query = {
       text: "SELECT * FROM songs WHERE id = $1",
-      values: [id],
+      values: [songId],
     };
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError("Musik tidak ditemukan");
     }
 
@@ -70,16 +70,16 @@ class SongsServices {
   }
 
   async updateSongById(
-    id,
+    songId,
     { title, year, genre, performer, duration, albumId },
   ) {
     const query = {
       text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, "albumId" = $6 WHERE id = $7 RETURNING id',
-      values: [title, year, genre, performer, duration, albumId, id],
+      values: [title, year, genre, performer, duration, albumId, songId],
     };
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError("Gagal memperbarui musik. Id tidak ditemukan");
     }
   }

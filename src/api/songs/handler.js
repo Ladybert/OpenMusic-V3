@@ -53,6 +53,7 @@ class SongsHandler {
 
   async getSongByIdHandler(request, h) {
     const { songId } = request.params;
+    console.log("ID yang diterima:", songId);
     const song = await this.service.getSongById(songId);
     return h
       .response({
