@@ -44,7 +44,6 @@ class ExportsHandler {
       return response;
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        // Handle Unauthorized (401) when no authentication is provided
         const response = h.response({
           status: "fail",
           message: "Autentikasi diperlukan",
