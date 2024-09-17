@@ -1,12 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const amqp = require("amqplib");
-const { Pool } = require("pg");
-const NotFoundError = require("../../exceptions/NotFoundError");
-const AuthorizationError = require("../../exceptions/AuthorizationError");
 const config = require("../../utils/config");
 const InvariantError = require("../../exceptions/InvariantError");
-
-const pool = new Pool();
 
 const ProducerService = {
   sendMessage: async (queue, message) => {
@@ -30,35 +25,6 @@ const ProducerService = {
           console.error("Error closing connection:", closeError);
         }
       }
-    }
-  },
-  verifyPlaylistIfExists: async (playlistId) => {
-    if (!pool) {
-      throw new InvariantError("Database pool not initialized");
-    }
-
-    const query = {
-      text: "SELECT * FROM playlists WHERE id = $1",
-      values: [playlistId],
-    };
-    const result = await pool.query(query);
-    if (!result.rowCount) {
-      throw new NotFoundError("Playlist tidak ditemukan");
-    }
-  },
-
-  verifyPlaylistOwner: async (playlistId, owner) => {
-    const query = {
-      text: "SELECT * FROM playlists WHERE id = $1",
-      values: [playlistId],
-    };
-    const result = await pool.query(query);
-    if (!result.rowCount) {
-      throw new NotFoundError("Playlist tidak ditemukan");
-    }
-    const playlist = result.rows[0];
-    if (playlist.owner !== owner) {
-      throw new AuthorizationError("Anda tidak berhak mengakses resource ini");
     }
   },
 };

@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
 const redis = require("redis");
 const config = require("../../utils/config");
 
@@ -17,7 +17,7 @@ class CacheService {
     this.client.connect();
   }
 
-  async set(key, value, expirationInSecond = 3600) {
+  async set(key, value, expirationInSecond = 1800) {
     await this.client.set(key, value, {
       EX: expirationInSecond,
     });

@@ -10,10 +10,7 @@ const routes = (handler) => [
   {
     method: "GET",
     path: "/albums/{albumId}/likes",
-    handler: handler.getLikeAlbumsHandler,
-    options: {
-      auth: "open_music_jwt",
-    },
+    handler: handler.getLikeAlbumsByIdHandler,
   },
   {
     method: "DELETE",

@@ -36,4 +36,12 @@ const mapPlaylistActivities = ({ username, title, action, time }) => ({
   time,
 });
 
-module.exports = { mapAlbums, mapSongs, mapPlaylists, mapPlaylistActivities };
+const mapAlbumLikes = ({ totalLikes }) => ({ totalLikes });
+
+module.exports = {
+  mapAlbums,
+  mapSongs,
+  mapPlaylists,
+  mapPlaylistActivities,
+  mapAlbumLikes,
+};

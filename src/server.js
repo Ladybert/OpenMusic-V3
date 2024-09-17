@@ -51,11 +51,11 @@ const likeAlbums = require("./api/likeAlbums");
 const LikeAlbumsService = require("./services/postgres/AlbumLikesService");
 
 // cache
-// const CacheService = require("./services/redis/CacheService");
+const CacheService = require("./services/redis/CacheService");
 
 const init = async () => {
   // Notes, Users, Auth, Collaborations, Exports, Uploads & Caching
-  // const cacheService = new CacheService();
+  const cacheService = new CacheService();
   const collaborationsService = new CollaborationsService();
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
@@ -63,9 +63,9 @@ const init = async () => {
   const authenticationsService = new AuthenticationsService();
   const playlistsService = new PlaylistsService();
   const storageService = new StorageService(
-    path.resolve(__dirname, "./src/api/albums/file/images/"),
+    path.resolve(__dirname, "api/uploads/file/images/"),
   );
-  const likeAlbumsService = new LikeAlbumsService();
+  const likeAlbumsService = new LikeAlbumsService(cacheService);
 
   const server = Hapi.server({
     port: process.env.PORT,

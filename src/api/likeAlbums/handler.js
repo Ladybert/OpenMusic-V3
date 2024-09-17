@@ -14,10 +14,7 @@ class LikeAlbumsHandler {
 
     console.log(credentialId);
 
-    await this.service.addLikeAlbum({
-      credentialId,
-      albumId,
-    });
+    await this.service.addLikeAlbum(credentialId, albumId);
 
     return h
       .response({
@@ -27,22 +24,32 @@ class LikeAlbumsHandler {
       .code(201);
   }
 
-  async getLikeAlbumsHandler(request, h) {
+  async getLikeAlbumsByIdHandler(request, h) {
     const { albumId } = request.params;
-    const likeAlbums = await this.service.getLikeAlbumsById(albumId);
+    const { result, isCache } = await this.service.getLikeAlbumsById(albumId);
 
-    return h
+    const response = h
       .response({
         status: "success",
-        data: { likeAlbums },
+        data: {
+          likes: result,
+        },
       })
       .code(200);
+
+    if (isCache) {
+      response.header("X-Data-Source", "cache");
+    } else {
+      response.header("X-Data-Source", "not-cache");
+    }
+
+    return response;
   }
 
   async removeLikeFromAlbumByIdHandler(request, h) {
     const { albumId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.service.removeLikeFromAlbumById({ albumId, credentialId });
+    await this.service.removeLikeFromAlbumById(albumId, credentialId);
 
     return h
       .response({
