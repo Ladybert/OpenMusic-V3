@@ -23,7 +23,7 @@ class AlbumLikesService {
       throw new InvariantError("Gagal menambahkan like pada album");
     }
 
-    // await this.cacheService.del(`user_album_likes:${albumId}`);
+    await this.cacheService.delete(`user_album_likes:${albumId}`);
 
     return result;
   }
@@ -35,11 +35,10 @@ class AlbumLikesService {
       if (result) {
         return {
           isCache: true,
-          result: JSON.parse(result), // Parse hasil cache
+          result: JSON.parse(result),
         };
       }
     } catch (error) {
-      // Jika terjadi error saat mengambil cache, akan lanjut ke query database
       console.error("Cache error:", error);
     }
 
